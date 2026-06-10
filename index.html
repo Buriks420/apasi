@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APASI</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e1e24">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        :root {
+            --bg-main: #1e1e24;
+            --bg-card: #2a2d35;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --accent-green: #27ae60;
+            --border-color: #404450;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0; padding: 0; padding-bottom: 70px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .header { width: 100%; padding: 20px; background-color: var(--bg-card); text-align: center; border-bottom: 1px solid var(--border-color); box-sizing: border-box;}
+        .header h1 { margin: 0; font-size: 22px; color: var(--accent-green); display: flex; align-items: center; justify-content: center; gap: 8px;}
+
+        .container { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; }
+        .page-title { font-size: 20px; margin-bottom: 5px; }
+        .page-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 0; margin-bottom: 25px; }
+
+        .card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .card-title { font-size: 16px; margin-top: 0; margin-bottom: 15px; color: var(--accent-green); display: flex; align-items: center; gap: 8px;}
+
+        /* Upload Area */
+        .upload-area {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px dashed var(--border-color); border-radius: 8px;
+            padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s ease; box-sizing: border-box;
+        }
+        .upload-area:hover { border-color: var(--accent-green); color: var(--accent-green); }
+        .upload-area:hover .material-symbols-outlined { color: var(--accent-green); }
+        input[type="file"] { display: none; }
+        
+        /* Icon styling */
+        .upload-icon { font-size: 48px; color: var(--text-muted); margin-bottom: 10px; transition: all 0.3s ease;}
+        .upload-btn-small { background-color: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 8px 16px; border-radius: 6px; font-size: 12px; margin-top: 10px;}
+
+        #preview { width: 100%; border-radius: 8px; display: none; margin-top: 15px; }
+
+        .submit-btn {
+            width: 100%; background-color: var(--bg-card); color: var(--text-main);
+            border: 1px solid var(--text-main); padding: 15px; border-radius: 8px;
+            font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .submit-btn:hover { background-color: var(--text-main); color: var(--bg-main); }
+
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; background-color: rgba(39, 174, 96, 0.1); border: 1px solid var(--accent-green); display: none; text-align: center; }
+        .prediction-text { font-size: 24px; font-weight: bold; color: var(--accent-green); margin: 10px 0; }
+
+        .history-item { background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .history-date { font-size: 12px; color: var(--text-muted); }
+        .history-result { font-weight: bold; color: var(--accent-green); }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; max-width: 450px; background: var(--bg-card);
+            display: flex; justify-content: space-around; padding: 10px 0 20px 0; border-top: 1px solid var(--border-color);
+        }
+        .nav-item { color: var(--text-muted); font-size: 12px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 50%;}
+        .nav-item.active { color: var(--accent-green); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1><span class="material-symbols-outlined">eco</span> APASI (Aplikasi Pendeteksi Alam Sawit Indonesia)</h1>
+    </div>
+
+    <div id="tab-scan" class="container tab-content active">
+        <h2 class="page-title">Deteksi Kematangan</h2>
+        <p class="page-subtitle">Ambil foto atau unggah gambar tandan buah sawit.</p>
+
+        <div class="card">
+            <h3 class="card-title"><span class="material-symbols-outlined">center_focus_strong</span> Upload Data Visual</h3>
+            <label class="upload-area" id="dropZone">
+                <span class="material-symbols-outlined upload-icon">upload_file</span>
+                <div style="font-size: 14px; color: var(--text-muted);">Gunakan Kamera atau Galeri</div>
+                <div class="upload-btn-small">Pilih File</div>
+                <input type="file" id="imageInput" accept="image/*">
+            </label>
+            <img id="preview" src="" alt="Preview Gambar">
+        </div>
+
+        <button class="submit-btn" id="cekPrediksiBtn">
+            <span class="material-symbols-outlined">memory</span> Cek Prediksi AI
+        </button>
+
+        <div id="resultBox" class="result-box">
+            <div style="color: var(--text-muted); font-size: 14px;">Hasil Analisis Citra:</div>
+            <div id="predText" class="prediction-text">Memproses...</div>
+            <div style="font-size: 14px; color: var(--text-muted);">Tingkat Confident: <span id="confText" style="color: var(--text-main);">-</span></div>
+        </div>
+    </div>
+
+    <div id="tab-history" class="container tab-content">
+        <h2 class="page-title">Riwayat Scan</h2>
+        <p class="page-subtitle">Data tersimpan di perangkat ini.</p>
+        <div id="historyList"></div>
+        <button onclick="clearHistory()" style="width:100%; background:transparent; border:1px solid #e74c3c; color:#e74c3c; padding:10px; border-radius:8px; margin-top:20px; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined">delete</span> Hapus Riwayat
+        </button>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('scan', this)">
+            <span class="material-symbols-outlined">document_scanner</span> Pindai
+        </div>
+        <div class="nav-item" onclick="switchTab('history', this)">
+            <span class="material-symbols-outlined">history</span> Riwayat
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+        const resultBox = document.getElementById('resultBox');
+        const predText = document.getElementById('predText');
+        const confText = document.getElementById('confText');
+        let selectedFile = null;
+
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            el.classList.add('active');
+            if(tabName === 'history') loadHistory();
+        }
+
+        imageInput.addEventListener('change', function() {
+            selectedFile = this.files[0];
+            if (selectedFile) {
+                preview.src = URL.createObjectURL(selectedFile);
+                preview.style.display = 'block';
+                resultBox.style.display = 'none'; 
+            }
+        });
+
+        document.getElementById('cekPrediksiBtn').addEventListener('click', async function() {
+            if (!selectedFile) return alert("Silakan pilih gambar terlebih dahulu!");
+
+            resultBox.style.display = 'block';
+            predText.innerText = 'Menganalisis...'; predText.style.color = '#a0a0b0'; confText.innerText = '-';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/predict', { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                predText.innerText = data.prediction;
+                predText.style.color = 'var(--accent-green)';
+                confText.innerText = data.confidence;
+
+                saveToHistory(data.prediction, data.confidence);
+
+            } catch (error) {
+                predText.innerText = 'Error API'; predText.style.color = '#e74c3c';
+            }
+        });
+
+        function saveToHistory(prediction, confidence) {
+            let history = JSON.parse(localStorage.getItem('nyawit_history')) || [];
+            const date = new Date().toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
+            history.unshift({ date, prediction, confidence }); 
+            if(history.length > 20) history.pop(); 
+            localStorage.setItem('nyawit_history', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('nyawit_history')) || [];
+            const listDiv = document.getElementById('historyList');
+            if (history.length === 0) {
+                listDiv.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Belum ada riwayat.</p>';
+                return;
+            }
+            listDiv.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div>
+                        <div class="history-result">${item.prediction}</div>
+                        <div class="history-date">${item.date} • Conf: ${item.confidence}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            if(confirm("Yakin hapus semua riwayat?")) {
+                localStorage.removeItem('nyawit_history');
+                loadHistory();
+            }
+        }
+    </script>
+</body>
+</html>

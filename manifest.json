@@ -1,0 +1,15 @@
+{
+  "name": "Nyawit",
+  "short_name": "Nyawit",
+  "start_url": "/",
+  "display": "fullscreen", 
+  "background_color": "#1e1e24",
+  "theme_color": "#1e1e24",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1892/1892747.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

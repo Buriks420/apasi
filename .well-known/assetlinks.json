@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "id.my.trihaka.nyawit.twa",
+        "sha256_cert_fingerprints": ["C8:1D:2F:47:22:26:11:DE:D7:E7:A5:27:96:68:A8:CA:A4:DC:39:76:42:00:E7:80:AC:F3:37:AE:E2:1F:6F:5F"]
+      }
+    }]
